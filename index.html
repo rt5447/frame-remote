@@ -94,6 +94,9 @@ header{display:flex;align-items:center;gap:10px}
 .more{height:40px;font-size:13px;color:var(--dim);background:transparent;border:1px solid var(--line);margin-top:-6px}
 .more-apps{display:none}
 .more-apps.show{display:grid}
+.sheet .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 0;
+  font-size:15px;letter-spacing:0;text-transform:none;color:var(--text)}
+.sheet .toggle input{width:auto;transform:scale(1.2);accent-color:var(--brass)}
 .sheet pre{white-space:pre-wrap;word-break:break-all;font-size:11px;background:var(--bg);padding:10px;border-radius:10px;max-height:240px;overflow:auto;color:var(--dim)}
 
 /* numpad */
@@ -221,6 +224,7 @@ header{display:flex;align-items:center;gap:10px}
       <li>Add this page to your home screen so it opens like an app.</li>
     </ol>
   </details>
+  <label class="toggle"><span>Vibrate when pressing buttons</span><input type="checkbox" switch id="hapticToggle"></label>
   <details>
     <summary>TV messages (for troubleshooting)</summary>
     <pre id="log">Nothing yet.</pre>
@@ -270,7 +274,36 @@ header{display:flex;align-items:center;gap:10px}
     if (!html){ b.classList.remove("show"); b.innerHTML = ""; return; }
     b.innerHTML = html; b.classList.add("show");
   }
-  const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch {} };
+  // ---------- haptics ----------
+  // Android: the Vibration API. iPhone (iOS 18+): Safari has no vibration API, but toggling a
+  // hidden <input type="checkbox" switch> plays the system "tick", so we use that.
+  const canVibrate = typeof navigator.vibrate === "function";
+  const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  let hapticsOn = store.get("haptics") !== "off";
+  function iosTick(){
+    try {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "checkbox"; input.setAttribute("switch", "");
+      label.style.display = "none"; label.appendChild(input);
+      document.head.appendChild(label); label.click(); label.remove();
+    } catch {}
+  }
+  function buzz(ms = 12){
+    if (!hapticsOn) return;
+    if (canVibrate){ try { navigator.vibrate(ms); } catch {} }
+    else if (isIOS) iosTick();
+  }
+  // Safari only plays the tick inside a user gesture. A finger touching down doesn't count yet,
+  // so on iPhone the tick fires when the finger lifts, unless the page already has an active gesture.
+  const activeGesture = () => !navigator.userActivation || navigator.userActivation.isActive;
+  let hapticPending = false;
+  function hapticDown(ms){
+    if (canVibrate || activeGesture()){ buzz(ms); hapticPending = false; }
+    else hapticPending = true;
+  }
+  function hapticUp(){ if (hapticPending){ hapticPending = false; buzz(); } }
 
   // ---------- troubleshooting log ----------
   const logLines = [];
@@ -402,9 +435,10 @@ header{display:flex;align-items:center;gap:10px}
   function bindKey(btn){
     const k = btn.dataset.key, repeat = btn.hasAttribute("data-repeat");
     let t1, t2;
-    const stop = () => { clearTimeout(t1); clearInterval(t2); btn.classList.remove("down"); };
+    const stop = e => { clearTimeout(t1); clearInterval(t2); btn.classList.remove("down");
+      if (e && e.type === "pointerup") hapticUp(); else hapticPending = false; };
     btn.addEventListener("pointerdown", e => {
-      e.preventDefault(); btn.classList.add("down"); buzz(8); key(k);
+      e.preventDefault(); btn.classList.add("down"); hapticDown(10); key(k);
       if (repeat) t1 = setTimeout(() => { t2 = setInterval(() => key(k), 140); }, 450);
     });
     ["pointerup","pointercancel","pointerleave"].forEach(ev => btn.addEventListener(ev, stop));
@@ -416,7 +450,7 @@ header{display:flex;align-items:center;gap:10px}
   (() => {
     const b = $("power"); let t, held = false;
     b.addEventListener("pointerdown", e => {
-      e.preventDefault(); held = false; b.classList.add("down","holding");
+      e.preventDefault(); held = false; b.classList.add("down","holding"); hapticDown(10);
       t = setTimeout(() => {
         held = true; buzz([20,40,20]); b.classList.remove("holding");
         key("KEY_POWER","Press"); toast("Turning the TV fully off…");
@@ -425,7 +459,7 @@ header{display:flex;align-items:center;gap:10px}
     });
     const end = fire => () => {
       clearTimeout(t); b.classList.remove("down","holding");
-      if (fire && !held){ buzz(10); key("KEY_POWER"); }
+      if (fire && !held){ hapticUp(); key("KEY_POWER"); } else hapticPending = false;
       held = true;
     };
     b.addEventListener("pointerup", end(true));
@@ -447,7 +481,7 @@ header{display:flex;align-items:center;gap:10px}
   const FAV = [/netflix/i, /youtube$/i, /^youtube/i, /prime video|amazon/i, /hotstar|disney/i, /apple tv/i, /spotify/i, /zee5/i, /sony\s?liv/i, /plex/i];
   function appBtn(a){
     const b = document.createElement("button"); b.textContent = a.name;
-    b.onclick = () => { buzz(10); launch(a); toast("Opening " + a.name); };
+    b.onclick = () => { buzz(12); launch(a); toast("Opening " + a.name); };
     return b;
   }
   function renderApps(list){
@@ -497,6 +531,11 @@ header{display:flex;align-items:center;gap:10px}
   }
   $("save").onclick = () => useIp($("ip").value);
   $("ip").addEventListener("keydown", e => { if (e.key === "Enter") useIp($("ip").value); });
+  $("hapticToggle").checked = hapticsOn;
+  $("hapticToggle").onchange = e => {
+    hapticsOn = e.target.checked; store.set("haptics", hapticsOn ? null : "off");
+    if (hapticsOn && canVibrate) buzz(20);
+  };
   $("forget").onclick = () => {
     store.set(tokenKey(), null);
     if (ws){ const s = ws; ws = null; s.close(); }
