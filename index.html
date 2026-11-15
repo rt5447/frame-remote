@@ -90,7 +90,11 @@ header{display:flex;align-items:center;gap:10px}
 /* apps */
 .section-h{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:2px 2px -6px}
 .apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.apps button{height:46px;font-size:13px;font-weight:600}
+.apps button{height:46px;font-size:13px;font-weight:600;padding:0 6px;line-height:1.15}
+.more{height:40px;font-size:13px;color:var(--dim);background:transparent;border:1px solid var(--line);margin-top:-6px}
+.more-apps{display:none}
+.more-apps.show{display:grid}
+.sheet pre{white-space:pre-wrap;word-break:break-all;font-size:11px;background:var(--bg);padding:10px;border-radius:10px;max-height:240px;overflow:auto;color:var(--dim)}
 
 /* numpad */
 .num{display:none;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -187,6 +191,8 @@ header{display:flex;align-items:center;gap:10px}
 
   <div class="section-h">Apps</div>
   <div class="apps" id="apps"></div>
+  <button class="more" id="moreToggle" style="display:none">All apps</button>
+  <div class="apps more-apps" id="moreApps"></div>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -214,6 +220,10 @@ header{display:flex;align-items:center;gap:10px}
       <li>The TV shows a pop-up asking to allow <b>"Phone Remote"</b>. Choose <b>Allow</b>. After that it connects silently.</li>
       <li>Add this page to your home screen so it opens like an app.</li>
     </ol>
+  </details>
+  <details>
+    <summary>TV messages (for troubleshooting)</summary>
+    <pre id="log">Nothing yet.</pre>
   </details>
   <div class="btns">
     <button id="forget">Forget pairing</button>
@@ -262,6 +272,18 @@ header{display:flex;align-items:center;gap:10px}
   }
   const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch {} };
 
+  // ---------- troubleshooting log ----------
+  const logLines = [];
+  function logEvent(label, obj){
+    let detail = "";
+    if (obj){ try { detail = JSON.stringify(obj.data !== undefined ? obj.data : obj); } catch {} }
+    detail = detail.replace(/"token":"[^"]*"/g, '"token":"(saved)"');
+    if (detail.length > 300) detail = detail.slice(0, 300) + "…";
+    logLines.unshift(new Date().toLocaleTimeString() + "  " + label + (detail ? "  " + detail : ""));
+    logLines.length = Math.min(logLines.length, 40);
+    const el = document.getElementById("log"); if (el) el.textContent = logLines.join("\n");
+  }
+
   // ---------- connection ----------
   let ws = null, state = "idle", everOpened = false, retryT = null, tries = 0, queue = [], watchdog = null;
 
@@ -305,11 +327,19 @@ header{display:flex;align-items:center;gap:10px}
     };
     sock.onmessage = ev => {
       let m; try { m = JSON.parse(ev.data); } catch { return; }
+      logEvent("TV → " + (m.event || "?"), m);
+      if (m.event === "ed.installedApp.get"){
+        const list = (m.data && (m.data.data || m.data)) || [];
+        if (Array.isArray(list) && list.length){ store.set("apps." + ip, JSON.stringify(list)); renderApps(list); }
+        return;
+      }
       if (m.event === "ms.channel.connect"){
         if (m.data && m.data.token) store.set(tokenKey(), String(m.data.token));
         state = "connected"; tries = 0; banner(null);
         setStatus("ok", store.get("name") || `TV at ${ip}`);
         const q = queue; queue = []; q.forEach(p => sock.send(p));
+        // Ask the TV which apps it has, so the app buttons use the TV's own IDs
+        sock.send(JSON.stringify({method:"ms.channel.emit", params:{event:"ed.installedApp.get", to:"host"}}));
       } else if (m.event === "ms.channel.unauthorized"){
         state = "denied"; store.set(tokenKey(), null);
         setStatus("bad", "The TV said no");
@@ -358,8 +388,15 @@ header{display:flex;align-items:center;gap:10px}
   }
   const key = (k, cmd = "Click") => send({method:"ms.remote.control",
     params:{Cmd:cmd, DataOfCmd:k, Option:"false", TypeOfRemote:"SendRemoteKey"}});
-  const launch = id => send({method:"ms.channel.emit",
-    params:{event:"ed.apps.launch", to:"host", data:{appId:id, action_type:"DEEP_LINK"}}});
+  // app_type 2 = Tizen web app (DEEP_LINK); 4 = native app (NATIVE_LAUNCH)
+  function launch(app){
+    const type = app.app_type === 4 || app.app_type === "4" ? "NATIVE_LAUNCH" : "DEEP_LINK";
+    logEvent("Phone → launch " + app.name + " (" + app.id + ", " + type + ")");
+    send({method:"ms.channel.emit",
+      params:{event:"ed.apps.launch", to:"host", data:{appId:app.id, action_type:type, metaTag:""}}});
+    // Backup route: the TV's own app-launch address. The response can't be read, but the TV acts on it.
+    try { fetch(`https://${ip}:8002/api/v2/applications/${encodeURIComponent(app.id)}`, {method:"POST", mode:"no-cors"}).catch(() => {}); } catch {}
+  }
 
   // ---------- buttons ----------
   function bindKey(btn){
@@ -406,12 +443,32 @@ header{display:flex;align-items:center;gap:10px}
   });
   $("numToggle").onclick = () => num.classList.toggle("show");
 
-  // apps
-  APPS.forEach(a => {
+  // apps: start with a built-in list, then replace it with the TV's own list once it answers
+  const FAV = [/netflix/i, /youtube$/i, /^youtube/i, /prime video|amazon/i, /hotstar|disney/i, /apple tv/i, /spotify/i, /zee5/i, /sony\s?liv/i, /plex/i];
+  function appBtn(a){
     const b = document.createElement("button"); b.textContent = a.name;
-    b.onclick = () => { buzz(10); launch(a.id); toast("Opening " + a.name); };
-    $("apps").appendChild(b);
-  });
+    b.onclick = () => { buzz(10); launch(a); toast("Opening " + a.name); };
+    return b;
+  }
+  function renderApps(list){
+    const apps = list.map(a => ({id: String(a.appId || a.id), name: a.name, app_type: a.app_type}))
+                     .filter(a => a.id && a.name);
+    const rank = a => { const i = FAV.findIndex(r => r.test(a.name)); return i < 0 ? 99 : i; };
+    apps.sort((x, y) => rank(x) - rank(y) || x.name.localeCompare(y.name));
+    const top = apps.filter(a => rank(a) < 99).slice(0, 9);
+    const rest = apps.filter(a => !top.includes(a));
+    const box = $("apps"); box.innerHTML = "";
+    (top.length ? top : apps.slice(0, 9)).forEach(a => box.appendChild(appBtn(a)));
+    $("moreApps").innerHTML = "";
+    const extra = top.length ? rest : apps.slice(9);
+    extra.forEach(a => $("moreApps").appendChild(appBtn(a)));
+    $("moreToggle").style.display = extra.length ? "" : "none";
+    $("moreToggle").textContent = `All apps (${apps.length})`;
+  }
+  let cachedApps = null;
+  try { cachedApps = JSON.parse(store.get("apps." + ip) || "null"); } catch {}
+  renderApps(cachedApps || APPS.map(a => ({appId: a.id, name: a.name, app_type: 2})));
+  $("moreToggle").onclick = () => $("moreApps").classList.toggle("show");
 
   // banner actions
   $("banner").addEventListener("click", e => {
