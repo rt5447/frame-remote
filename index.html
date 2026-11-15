@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#161514">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Frame Remote">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAPJ0lEQVR42u2dW2xcx3mA55+Zc87euCRFUtJS1iUSdaNIWbZISXTaKJYVN20Cx8qDBcUO0tYF2j61sFO7fSnyVMAuChSN2/ShbhDEKeo4iWMpaIJCRaxLHMd0Jeoux6JiJ5QoV6R5292z58zl78NZrWjLjkRyuVod/h9WLwJILvZ8O/PPP/P/A4vbWhlBfBScPgKC5CBIDoLkIEgOguQgSA6C5CBIDoLkIEgOgiA5CJKDIDkIkoMgOQiSgyA5CJKDIDkIkoMgSA6C5CBIDoLkIEgOguQgSA6C5CBIDoLkIAg5lx+G8j+ifkG8TXJoi/Tp1/vUAAwAai0HMJZJOrP+w0QNxgwAprQJlZ3dU5qNHABMG8yk3G88/dlM0tEGyZA6xFrbnE3+2ysn/n3/QHM2aYyt9cjRkHJJjvrEGNuQcl1HzDrsmGvMoQ2SHPUqB2qDOIeIdK6rFYDyi6g35v5cZNXfE5b/EbfBBlY/eY6P/o2chpHbFIEim8skMu9yIGN5X1X3LRK3MmYgMkcK1+FV/OxlFVfVUkC+GP75Mz/J+0oKIENqBud8bNJ//At3P/7QlrFJXwhevyPHVDEkOWqJEHyqGIbKVDfsmJeYQwogOWorB0gBVc9Wz8tqBbH8IlitMuXz8WnTlj1BchAkB1HXMcfHr8UpOVa1EAPjJAcAtDQ1kB/VSGnAVKGUL/h8/jPRNR05SI7qfIwUcxAUkBIkB0FyELSUjWOgd+ORJZKDPoIocWDwuh84t3IPkiNWu1aOFI7kiIwBY+VyD6u0XeB6LHQ5BIeJQvDIA+v37l4/UQgEgEFsTHsvHnzru//zVmPaMwu4qo9GjvLIkUk6yljBwVjMJB1HCjpyQHKUYw5tMRokjEVtkY7B0lL2gzU4014EyUGQHATJQZAcBMlRl+fQFlThOF8QxeaMBaGeux8AzBiMkqd8AZQE89gnQNGyKV/t6l3x0O+uzvvhrB8qByj6evPatqce6024ohTo2JeMy3ibUfCVEPxvvrLtk5vbR8b9/37j10U/5ACzy3ABh9/fsWpHd27t8qZ/+cGJQ8eGWrIJBrEt3+IxNmOqGG5a3fq3j+/45Ob28amgrSm1u2f5RCEUAmbx2/J+ePfati3r2kbG/XTS+YtH7vmjz29iAFojj2kMEk85JIeJfNDbufRrf9LXtaZ1shBKyfN+uGdnx73rl0wV1YweJzBmDHqu3POpNYwB5xAqwwD+8HOb/nLvPZahNjaWMwyP5ZgxWQy3d+WefqxXGVvwleAAjBmLrise+70NnissIsxkNikE6it/0NnbuXSyGIpr5+jfGyv2dbc/9WivRbQ2hkl3Hj8z8r7qXtP211/epi0aawUHxhgi4xxSnlMoqZnOAtZgQ8odnSiN54PGjFtpzesIPpYP+rpzT+zb6isdv8NBPGabZ8aiFHzv7nVcgDY28sAiSgkM8Vv/deYf/uN/jbEAMzkICAwt/ufB83/3rTdOXxhpSLmVQx6Sw3g+2LEpt2NTbqoYinjNLnEbOfxAP/mlrZvXtkWzSdkMwTmDf3zx+Dd/dAYYk3LGvZGQsZZs8szgyNee/3n/2SuNGa8yfnAOfqif3Ld189q2qaKKkx88Rk2+wQ9NX3f79mlfYkTmSC4Annmh/+enLi9pTkXtQ2aBNjaddBzBn3mh//XTw80ZzyBeH64kf2TXumRCGotActTbhKKNbc56f/Zwd6jN9ekfmNb47HfejB6nmnmL5+kYi4JzAfDsC/2vnbqcdKVFrCybezYu2fOpjqliGJvkaVzk4FAK9YPbVjY1JJS2UP6uY3PG239k8PDxoUUNiarc8RBNUsDY118aKPrKERyvdeWaKIQP9CzPtWYqb4DkqIthwxrMpN37711eUppfCzUySaf/3JX9RwZbGhN6bmPGh/zwpPBL6hsvn5SC47XJRRu7tCXd15UrlFQ8Bg8ejx1XP9Qdy5qaswltpk/5+PKhwWJJzTpf/rHzC6LnitdOXT7x9tVUwokmFwAWatu1usWR3MYio87jMGwgeq744s4OR5a/xxYxnXQGfnn1xIWrmaQ7H+UFwIAztv/oxYp3HMAPdM/GJds6c35gYjB28FhcLIKuI1blsqWwHIoCgFL2lSOD87cnZhFTCefkhav9565UBg+L6DpyVS5bCnUMNlx4DI5rKG3Xr2h2HRENG8iYFPD+hD94aSLhyFspMkBEYz/wupWfAmChMqcvjkpeTpwAQKD06mWN2bSr7/w1bQzkgEDpDSsXZTNelGOwFlOec/Tk5clCIMTNow1E5rmyucFrypRfzQ2e58qb6mEtphPO62eG35/0HcmxrIvtXLUonXTsnV8qJ+PR+dtYNAanP+9iSd/K44nilVMXrj6//3Qp1ACAiAlXnrpwNdqfu+lvCEITKpP05PSRLB6rFXmnR6NK25bGxP333uUHinNAxhzJRyf8IycupRI3//oisoQrTg2O9J97rxIkRP+ZcG9SERn9rfcnS4eOX9r7mfUT+UBwUNq2NiV3brnruwffaszc2aW2Mh5L2WhUnx5D3HomKppWKl/9md5dcuPfuvH9kBysrq7WndFaIerPUcUrkuJxcJDqVoi4y3HjFFDLozc3/i2kDGn9bNZ/aOVpEQOla6OHRQzCD/wtDuA5MgZ63NlyIGOcQ94Pz/5qtHK9mbWYSbqdq1pmfU33jA6eZdNe5ydaAmWi02XR9v25d0e9a0k5koPdzhKEQnj+3THPkYgIjGmL2bS7ur2xBjlstOhIvn5Fs9I2mlw4h4Kvzr87Vt27+EiO2V9iJTgYa6cdCdOr2xszKXde0wwAEGqzbnmz4/DpCRVjrSM5TSusHnbdkp7z6vGhscmSvJ7DNl1rWhobvA/u4Fd/WyfQtntNa0NqWuY+4RweuDQyXoxBqiMmh31CZZQuVxZFNUjppHv/Pcv9cL7O3UTJ2aWL0vd156aX4AJjxUBTnqNeYlJH8rGp0sH+X3uORIvRqcEg1A9uX7G4Oa3NvBza4xz8QO/uXbH02rnA6J0Mj+QPHx9KJ+Kw8RaT8xwJR/z02G/yxZALiFrNhtouWZTeVS6O5fMxbDRlEw9uW1m8digw2qR97dTw8GghHunzOMiBjEnBxyZLF34zXjnAwTlMFcMv7uzYumFJ1cuNOIdQmz99uLs561VGpijWOfOrUTcW0WiMTp8DKG1/eGSQQ7nJfZSESCbk3gfWiWnVb6waVdrj+WD7ptx93e1+aKJfayxmkm75YJjn0BnSeppZENMJ59SFqz87eTnpCnO9nER1d5TrZqviR7n+sSv3xL6tfqinNdKHYkn94NAg0N5KfW6vCMH/9YcnC75KOCIKBysV90891msQQ21mPb8AMAEwlg+i+v3plfXGYmtj4pXDg2+eu5JJxmTYiJccjDmCF3313PcHwmvJ7Mp3va8r91eP9iRc6QeaA5vR+haACQ5a20KgfufuZZFnlZ4cBjHlyZ8eGzpw9GJzxtMGaeSo08kl5clDx4b2H7nYkr1eyBT5sXXDkue+umvbplze10VfcYCobwf81i09wUEbnCyECU9+9dGep7/cqy2aafX7UYHTc98rG8moJ1jdYiy2ZBMHjg6uWdbY190+lg+itm6CQynQCVc8+aWtn9m24sCRiyfevhpqk0o4wJgj+YfGCmOstRhoHSq7pCW9Z2fHg9tXNjV4xZKu7NFHpZGMsX96acAPVMKRNl7dweImR5Q+j4qnn3q0t687N14IOAMAxjlog9roLesWb1m3uP/slTMXR39xZrgUmrHJUuW5AmMGMZtyPUd0rWnd3NHa19W+tDVVLGk/uL6TFxXLMMaefaH/9dPDTely0T3JUf/3p3Bt7N9/p/+JfVu3d+VKoTYGBS9XPBV9BcB6O5f2dbfv+XSHUubQwCV9LcvJgQXKbFzVsn5lsyNFQ8rJ+2oiH3KAihnaYsqTxZL6+ksDUf2+juOdPfFsNWkRheDc2me/3b+9K/fkvq1Jl08VQyE4sHI0WiwpRJb0ZMqTe3evg2mxR5TOCrW1FscmAy6gssYxFjmHxU3JV48N/fP3BvySaoypGXHuQ4qIwCGVcF47eTnvq0ceWNezYclkMYxubisPA8CMRYZsIh/euEKJxomoLyUyZi0CsIa0W/TVN3905sDRi6EynidtfO/5kvG+nwsZZtPu6Qsjg0PjD+/s2NWzfGlLWmnrl5S1CBw4AAITH7XMQMYYsigWcSTPptxQmePn/+/lQ2/3n32vucFzHWFjfQNc/K/xMhbTKcda/PaPzx7sf/e+rvbO1S09G5d6Dg+UUcoyYErbD2klBI+WOcmEC4wNjxR+8vo7ZwZH+89dAWCtTUltLIv7VV8L4o636PvdlPEm8+H3X317/9HBbZ25Vbns6mWNnZ9oCZVpa0pWTpAjYwJgyg/zvjIWD/zsol/Sh48PDY8UHMlTCQeAVbEVDMlRL0OI4NCU8SyyN85eOTIw1JBy00lHcNh5z12VFoPImOeIc++Mnn/nfdcRV8d9REwlnKYGD5EtqKsBF9btkMhYdKo05clM0tHG5n3FGHvx4C+R4fRgxXWE63ClbWPajZY/C/CC2QV6dahFtAajzDoD1phxbwxmLSIAo0uHFy7RkuTjkptI5ZAEQXIQJAdBchAkB0FyECQHQXIQJAdBchAkB0Gw27O3wgEg7pe/16SXN9SsUaKs2YnOqaIPjORgVWgnFNaoUWLtRo58sbTQdzmr50dtBo+aTis0cFBASpAcBMlB0FKWVa9lLBeCCwFI4SerWZteLgWvertmWfUis7FJf7IQSpKjll9xyQv5oh+o6q5iZHWPdLsO/+OH7g6Vqfo9v8RvXwn6gerZmKuuH7KKi++o3OPxh7YALVlZrauCo6a5paCaHZvnZVqhp3W7bhfhdTutVIIjelS0lCVoKfvxGGONscYgBRl1iDFWGzuXHnZyLhFoczaZTbua5KhLtLatTamk58y6L4CcXdQZdc16fv+A5whrGe2o1WOIajGZkG+eHU7MtjcVLG5rnfXCZKoYUKaL1fHOvrWY9GRitoPHXKcVegZ1foeVtWhrOa1MD3noAdBSliA5CILkIEgOguQgSA6C5CBIDoLkIEgOguQgSA6CIDkIkoMgOQiSgyA5CJKDIDkIkoMgOQiSgyA5CILkIEgOguQgSA6C5CBIDoLkIEgOIs78PwwHXfctVataAAAAAElFTkSuQmCC">
+<title>Frame Remote</title>
+<style>
+:root{
+  --bg:#161514; --panel:#201e1c; --btn:#2b2825; --btn-hi:#36322e; --line:#3a3530;
+  --text:#ece6dc; --dim:#9a9187; --brass:#c9a36a; --brass-dim:#8a6f47;
+  --ok:#6fbf73; --warn:#e0b04a; --bad:#e06a5a;
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
+  font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  -webkit-user-select:none;user-select:none;overscroll-behavior:none}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.wrap{max-width:420px;margin:0 auto;padding:14px 18px 28px;display:flex;flex-direction:column;gap:18px;min-height:100%}
+button{font:inherit;color:inherit;border:0;background:var(--btn);border-radius:var(--r);
+  touch-action:manipulation;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:background .08s, transform .08s}
+button:active,button.down{background:var(--btn-hi);transform:scale(.96)}
+svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* header */
+header{display:flex;align-items:center;gap:10px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--dim);flex:none;box-shadow:0 0 0 3px #0000}
+.dot.ok{background:var(--ok);box-shadow:0 0 10px #6fbf7366}
+.dot.wait{background:var(--warn);animation:pulse 1s infinite}
+.dot.bad{background:var(--bad)}
+@keyframes pulse{50%{opacity:.35}}
+.title{flex:1;min-width:0}
+.title b{display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.title span{display:block;font-size:13px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn{width:42px;height:42px;border-radius:50%;background:transparent}
+.icon-btn:active{background:var(--btn)}
+
+/* banner */
+.banner{display:none;background:#2a2219;border:1px solid var(--brass-dim);border-radius:14px;padding:12px 14px;font-size:14px;color:#e8dcc8}
+.banner.show{display:block}
+.banner a{color:var(--brass);font-weight:600}
+.banner .act{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.banner .act button,.banner .act a{padding:9px 14px;border-radius:12px;font-size:14px;background:var(--btn);text-decoration:none;color:var(--text)}
+.banner .act .primary{background:var(--brass);color:#1b1712;font-weight:600}
+
+/* top row */
+.row{display:grid;gap:12px}
+.r3{grid-template-columns:repeat(3,1fr)}
+.r4{grid-template-columns:repeat(4,1fr)}
+.pill{height:54px;font-size:13px;color:var(--dim);flex-direction:column;gap:2px}
+.pill svg{color:var(--text)}
+#power{color:var(--brass)}
+#power svg{color:var(--brass)}
+#power .ring{position:absolute;inset:0;border-radius:var(--r);border:2px solid var(--brass);clip-path:inset(0 100% 0 0);pointer-events:none}
+#power{position:relative;overflow:hidden}
+#power.holding .ring{transition:clip-path 1s linear;clip-path:inset(0 0 0 0)}
+
+/* d-pad */
+.pad{position:relative;width:min(100%,290px);aspect-ratio:1;margin:4px auto 0;border-radius:50%;
+  background:radial-gradient(circle at 50% 40%,#2c2926,#232120);box-shadow:inset 0 0 0 1px var(--line),0 10px 30px #0006}
+.pad button{position:absolute;background:transparent;border-radius:0;color:var(--dim)}
+.pad button:active,.pad button.down{background:#ffffff0d;color:var(--text);transform:none}
+.pad .up{left:28%;right:28%;top:0;height:30%;border-radius:999px 999px 0 0}
+.pad .down-k{left:28%;right:28%;bottom:0;height:30%;border-radius:0 0 999px 999px}
+.pad .left{top:28%;bottom:28%;left:0;width:30%;border-radius:999px 0 0 999px}
+.pad .right{top:28%;bottom:28%;right:0;width:30%;border-radius:0 999px 999px 0}
+.pad .ok{left:31%;top:31%;width:38%;height:38%;border-radius:50%;background:var(--btn);color:var(--text);
+  font-weight:600;letter-spacing:.08em;box-shadow:0 0 0 1px var(--line),0 6px 16px #0007}
+.pad .ok:active,.pad .ok.down{background:var(--btn-hi);transform:scale(.96)}
+.pad svg{width:26px;height:26px}
+
+/* bottom cluster */
+.cluster{display:grid;grid-template-columns:64px 1fr 64px;gap:12px;align-items:stretch}
+.rocker{display:flex;flex-direction:column;background:var(--btn);border-radius:32px;overflow:hidden}
+.rocker button{flex:1;border-radius:0;background:transparent;min-height:62px}
+.rocker button:active,.rocker button.down{background:var(--btn-hi);transform:none}
+.rocker .lbl{font-size:11px;letter-spacing:.12em;color:var(--dim);text-align:center;padding:2px 0}
+.mid{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:1fr;gap:10px}
+.mid button{min-height:58px;font-size:12px;color:var(--dim);flex-direction:column;gap:3px}
+.mid button svg{color:var(--text)}
+
+/* apps */
+.section-h{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:2px 2px -6px}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.apps button{height:46px;font-size:13px;font-weight:600}
+
+/* numpad */
+.num{display:none;grid-template-columns:repeat(3,1fr);gap:10px}
+.num.show{display:grid}
+.num button{height:50px;font-size:18px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:#000a;display:none;z-index:10}
+.scrim.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:11;background:var(--panel);border-radius:22px 22px 0 0;
+  padding:18px 20px calc(24px + env(safe-area-inset-bottom));max-width:480px;margin:0 auto;
+  transform:translateY(105%);transition:transform .22s ease;max-height:88vh;overflow:auto;-webkit-user-select:text;user-select:text}
+.sheet.show{transform:none}
+.sheet h2{margin:0 0 4px;font-size:18px}
+.sheet p{margin:6px 0 12px;color:var(--dim);font-size:14px}
+.sheet label{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin:14px 0 6px}
+.sheet input{width:100%;font:inherit;font-size:17px;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.sheet .btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.sheet .btns button{flex:1;padding:13px 10px;border-radius:12px;min-width:120px}
+.sheet .primary{background:var(--brass);color:#1b1712;font-weight:600}
+.sheet .found{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.sheet .found button{justify-content:flex-start;padding:12px 14px;border-radius:12px;text-align:left}
+.sheet details{margin-top:16px;color:var(--dim);font-size:14px}
+.sheet summary{color:var(--text);cursor:pointer}
+.sheet ol{padding-left:20px;margin:8px 0}
+.sheet code{background:var(--bg);padding:1px 6px;border-radius:6px;color:var(--brass)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,40px);opacity:0;
+  background:#000d;color:var(--text);padding:10px 16px;border-radius:12px;font-size:14px;transition:.2s;z-index:20;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="dot" id="dot"></span>
+    <div class="title"><b>The Frame</b><span id="sub">Not set up</span></div>
+    <button class="icon-btn" id="gear" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+
+  <div class="banner" id="banner"></div>
+
+  <div class="row r3">
+    <button class="pill" id="power" aria-label="Power">
+      <svg viewBox="0 0 24 24"><path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg>
+      <span id="powerLbl">Power</span><i class="ring"></i>
+    </button>
+    <button class="pill" data-key="KEY_SOURCE">
+      <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Source
+    </button>
+    <button class="pill" data-key="KEY_MUTE">
+      <svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>Mute
+    </button>
+  </div>
+
+  <div class="pad">
+    <button class="up" data-key="KEY_UP" data-repeat aria-label="Up"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
+    <button class="left" data-key="KEY_LEFT" data-repeat aria-label="Left"><svg viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="right" data-key="KEY_RIGHT" data-repeat aria-label="Right"><svg viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button>
+    <button class="down-k" data-key="KEY_DOWN" data-repeat aria-label="Down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <button class="ok" data-key="KEY_ENTER">OK</button>
+  </div>
+
+  <div class="row r3">
+    <button class="pill" data-key="KEY_RETURN"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Back</button>
+    <button class="pill" data-key="KEY_HOME"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
+    <button class="pill" data-key="KEY_MENU"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Settings</button>
+  </div>
+
+  <div class="cluster">
+    <div class="rocker">
+      <button data-key="KEY_VOLUP" data-repeat aria-label="Volume up"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      <div class="lbl">VOL</div>
+      <button data-key="KEY_VOLDOWN" data-repeat aria-label="Volume down"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+    </div>
+    <div class="mid">
+      <button data-key="KEY_REWIND" data-repeat><svg viewBox="0 0 24 24"><path d="m11 19-9-7 9-7zM22 19l-9-7 9-7z"/></svg>Rew</button>
+      <button data-key="KEY_PLAY"><svg viewBox="0 0 24 24"><path d="m6 4 14 8-14 8z"/></svg>Play</button>
+      <button data-key="KEY_FF" data-repeat><svg viewBox="0 0 24 24"><path d="m13 19 9-7-9-7zM2 19l9-7-9-7z"/></svg>FF</button>
+      <button data-key="KEY_PAUSE"><svg viewBox="0 0 24 24"><path d="M7 4h3v16H7zM14 4h3v16h-3z"/></svg>Pause</button>
+      <button data-key="KEY_STOP"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>Stop</button>
+      <button id="numToggle"><svg viewBox="0 0 24 24"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg>123</button>
+    </div>
+    <div class="rocker">
+      <button data-key="KEY_CHUP" data-repeat aria-label="Channel up"><svg viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button>
+      <div class="lbl">CH</div>
+      <button data-key="KEY_CHDOWN" data-repeat aria-label="Channel down"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="num" id="num"></div>
+
+  <div class="section-h">Apps</div>
+  <div class="apps" id="apps"></div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <h2>Connect to your TV</h2>
+  <p>Your phone and the TV must be on the same Wi-Fi.</p>
+  <label for="ip">TV's IP address</label>
+  <input id="ip" inputmode="decimal" placeholder="192.168.1.34" autocomplete="off">
+  <div class="btns">
+    <button class="primary" id="save">Connect</button>
+      </div>
+  <div class="found" id="found"></div>
+  <details>
+    <summary>Where do I find the IP address?</summary>
+    <ol>
+      <li>On the TV: <b>Settings → General → Network → Network Status → IP Settings</b> (on newer models: <b>Settings → Connection → Network</b>).</li>
+      <li>Or in your Wi-Fi router's app, listed as "Samsung" or "The Frame".</li>
+      <li>Tip: in your router, reserve that address for the TV so it never changes.</li>
+    </ol>
+  </details>
+  <details>
+    <summary>First-time setup (one-time)</summary>
+    <ol>
+      <li>The TV uses a private security certificate. Tap <b>"Approve TV certificate"</b> when this page asks, then choose <b>Advanced → Proceed</b> (Android) or <b>Show Details → visit this website</b> (iPhone). Then come back here.</li>
+      <li>The TV shows a pop-up asking to allow <b>"Phone Remote"</b>. Choose <b>Allow</b>. After that it connects silently.</li>
+      <li>Add this page to your home screen so it opens like an app.</li>
+    </ol>
+  </details>
+  <div class="btns">
+    <button id="forget">Forget pairing</button>
+    <button id="close">Done</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const NAME = "Phone Remote";            // shown in the TV's "Allow?" pop-up
+  const APPS = [
+    {name:"Netflix", id:"3201907018807"},
+    {name:"YouTube", id:"111299001912"},
+    {name:"Prime Video", id:"3201910019365"},
+    {name:"Disney+", id:"3201901017640"},
+    {name:"Apple TV", id:"3201807016597"},
+    {name:"Spotify", id:"3201606009684"},
+  ];
+  const $ = id => document.getElementById(id);
+
+  // ---------- storage (may be unavailable) ----------
+  const store = {
+    get(k){ try { return localStorage.getItem("frame." + k); } catch { return null; } },
+    set(k,v){ try { v == null ? localStorage.removeItem("frame." + k) : localStorage.setItem("frame." + k, v); } catch {} }
+  };
+  const params = new URLSearchParams(location.search);
+  if (params.get("tv")) store.set("ip", params.get("tv"));
+  let ip = store.get("ip") || "192.168.1.34";   // your Frame TV
+  const tokenKey = () => "token." + ip;
+
+  // ---------- UI helpers ----------
+  let toastT;
+  function toast(msg, ms = 2600){
+    const t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), ms);
+  }
+  function setStatus(kind, text){
+    $("dot").className = "dot " + (kind || "");
+    $("sub").textContent = text;
+  }
+  function banner(html){
+    const b = $("banner");
+    if (!html){ b.classList.remove("show"); b.innerHTML = ""; return; }
+    b.innerHTML = html; b.classList.add("show");
+  }
+  const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch {} };
+
+  // ---------- connection ----------
+  let ws = null, state = "idle", everOpened = false, retryT = null, tries = 0, queue = [], watchdog = null;
+
+  function url(){
+    const tok = store.get(tokenKey());
+    let u = `wss://${ip}:8002/api/v2/channels/samsung.remote.control?name=${encodeURIComponent(btoa(NAME))}`;
+    if (tok) u += `&token=${encodeURIComponent(tok)}`;
+    return u;
+  }
+
+  function connect(){
+    clearTimeout(retryT);
+    if (!ip){ setStatus("", "Not set up"); openSheet(); return; }
+    if (ws && (ws.readyState === 0 || ws.readyState === 1)) return;
+    state = "connecting"; everOpened = false;
+    setStatus("wait", `Connecting to ${ip}…`);
+    let sock;
+    try { sock = new WebSocket(url()); }
+    catch (e) { fail("Couldn't start a connection: " + e.message); return; }
+    ws = sock;
+    const openTimer = setTimeout(() => {
+      if (sock.readyState === 0){ if (ws === sock) ws = null; try { sock.close(); } catch {} fail(); }
+    }, 8000);
+    // Never leave the person staring at "Connecting…"
+    clearTimeout(watchdog);
+    watchdog = setTimeout(() => {
+      if (ws === sock && state !== "connected" && state !== "denied" && sock.readyState === 1){
+        setStatus("wait", "TV hasn't answered yet");
+        banner(`The TV accepted the connection but hasn't approved it yet. <b>Look at the TV</b>: if there's a pop-up about "${NAME}", choose <b>Allow</b>.
+          <div class="act"><button data-act="repair">Ask the TV again</button><button data-act="settings">Change TV</button></div>`);
+      }
+    }, 10000);
+    sock.onopen = () => {
+      clearTimeout(openTimer); everOpened = true;
+      if (store.get(tokenKey())) setStatus("wait", "Connected, waiting for the TV…");
+      if (!store.get(tokenKey())){
+        state = "allow";
+        setStatus("wait", "Look at your TV and choose Allow");
+        banner(`<b>Check your TV.</b> It's asking whether to allow "${NAME}". Choose <b>Allow</b> with the TV remote.`);
+      }
+    };
+    sock.onmessage = ev => {
+      let m; try { m = JSON.parse(ev.data); } catch { return; }
+      if (m.event === "ms.channel.connect"){
+        if (m.data && m.data.token) store.set(tokenKey(), String(m.data.token));
+        state = "connected"; tries = 0; banner(null);
+        setStatus("ok", store.get("name") || `TV at ${ip}`);
+        const q = queue; queue = []; q.forEach(p => sock.send(p));
+      } else if (m.event === "ms.channel.unauthorized"){
+        state = "denied"; store.set(tokenKey(), null);
+        setStatus("bad", "The TV said no");
+        banner(`The TV blocked this remote. On the TV open <b>Settings → General → External Device Manager → Device Connection Manager → Device List</b>, remove or allow "${NAME}", then <a href="#" data-act="retry">try again</a>.`);
+      } else if (m.event === "ms.channel.timeOut"){
+        setStatus("bad", "Nobody chose Allow in time");
+        banner(`The TV's pop-up timed out. <a href="#" data-act="retry">Try again</a> and choose <b>Allow</b> on the TV.`);
+      }
+    };
+    sock.onerror = () => {};
+    sock.onclose = () => {
+      clearTimeout(openTimer);
+      if (ws !== sock) return;
+      ws = null;
+      if (state === "denied") return;
+      if (!everOpened){
+        // Never opened: either the TV is off/unreachable or the certificate hasn't been approved yet.
+        fail();
+      } else {
+        state = "idle";
+        setStatus("", "Disconnected — tap any button to reconnect");
+        if (document.visibilityState === "visible" && tries++ < 3) retryT = setTimeout(connect, 1500);
+      }
+    };
+  }
+
+  function fail(extra){
+    state = "offline";
+    setStatus("bad", `Can't reach the TV at ${ip}`);
+    const certUrl = `https://${ip}:8002/api/v2/`;
+    banner(`${extra ? extra + "<br>" : ""}Can't connect. If this is the first time on this phone, the TV's certificate needs a one-time approval:
+      <div class="act">
+        <a class="primary" href="${certUrl}" target="_blank" rel="noopener">Approve TV certificate</a>
+        <button data-act="retry">Try again</button>
+        <button data-act="settings">Change TV</button>
+      </div>
+      <div style="margin-top:8px;color:var(--dim);font-size:13px">On that page choose <b>Advanced → Proceed</b> (Android) or <b>Show Details → visit this website</b> (iPhone), then come back and tap Try again. If you've done that already, check the TV is on (Art Mode is fine) and on the same Wi-Fi.</div>`);
+  }
+
+  function send(obj){
+    const p = JSON.stringify(obj);
+    if (ws && ws.readyState === 1 && state === "connected"){ ws.send(p); return true; }
+    if (queue.length < 5) queue.push(p);
+    tries = 0; connect();
+    return false;
+  }
+  const key = (k, cmd = "Click") => send({method:"ms.remote.control",
+    params:{Cmd:cmd, DataOfCmd:k, Option:"false", TypeOfRemote:"SendRemoteKey"}});
+  const launch = id => send({method:"ms.channel.emit",
+    params:{event:"ed.apps.launch", to:"host", data:{appId:id, action_type:"DEEP_LINK"}}});
+
+  // ---------- buttons ----------
+  function bindKey(btn){
+    const k = btn.dataset.key, repeat = btn.hasAttribute("data-repeat");
+    let t1, t2;
+    const stop = () => { clearTimeout(t1); clearInterval(t2); btn.classList.remove("down"); };
+    btn.addEventListener("pointerdown", e => {
+      e.preventDefault(); btn.classList.add("down"); buzz(8); key(k);
+      if (repeat) t1 = setTimeout(() => { t2 = setInterval(() => key(k), 140); }, 450);
+    });
+    ["pointerup","pointercancel","pointerleave"].forEach(ev => btn.addEventListener(ev, stop));
+    btn.addEventListener("contextmenu", e => e.preventDefault());
+  }
+  document.querySelectorAll("[data-key]").forEach(bindKey);
+
+  // Power: tap = KEY_POWER (Frame: TV <-> Art Mode). Hold 1s = fully off.
+  (() => {
+    const b = $("power"); let t, held = false;
+    b.addEventListener("pointerdown", e => {
+      e.preventDefault(); held = false; b.classList.add("down","holding");
+      t = setTimeout(() => {
+        held = true; buzz([20,40,20]); b.classList.remove("holding");
+        key("KEY_POWER","Press"); toast("Turning the TV fully off…");
+        setTimeout(() => key("KEY_POWER","Release"), 3200);
+      }, 1000);
+    });
+    const end = fire => () => {
+      clearTimeout(t); b.classList.remove("down","holding");
+      if (fire && !held){ buzz(10); key("KEY_POWER"); }
+      held = true;
+    };
+    b.addEventListener("pointerup", end(true));
+    b.addEventListener("pointercancel", end(false));
+    b.addEventListener("pointerleave", end(false));
+    b.addEventListener("contextmenu", e => e.preventDefault());
+  })();
+
+  // number pad
+  const num = $("num");
+  ["1","2","3","4","5","6","7","8","9","","0",""].forEach(n => {
+    const b = document.createElement("button");
+    if (n){ b.textContent = n; b.dataset.key = "KEY_" + n; bindKey(b); } else b.style.visibility = "hidden";
+    num.appendChild(b);
+  });
+  $("numToggle").onclick = () => num.classList.toggle("show");
+
+  // apps
+  APPS.forEach(a => {
+    const b = document.createElement("button"); b.textContent = a.name;
+    b.onclick = () => { buzz(10); launch(a.id); toast("Opening " + a.name); };
+    $("apps").appendChild(b);
+  });
+
+  // banner actions
+  $("banner").addEventListener("click", e => {
+    const act = e.target.closest("[data-act]"); if (!act) return;
+    e.preventDefault();
+    if (act.dataset.act === "retry"){ state = "idle"; tries = 0; banner(null); connect(); }
+    if (act.dataset.act === "settings") openSheet();
+    if (act.dataset.act === "repair"){
+      store.set(tokenKey(), null);
+      if (ws){ const s = ws; ws = null; s.close(); }
+      state = "idle"; tries = 0; banner(null); connect();
+    }
+  });
+
+  // ---------- settings sheet ----------
+  function openSheet(){ $("ip").value = ip; $("scrim").classList.add("show"); $("sheet").classList.add("show"); }
+  function closeSheet(){ $("scrim").classList.remove("show"); $("sheet").classList.remove("show"); }
+  $("gear").onclick = openSheet; $("close").onclick = closeSheet; $("scrim").onclick = closeSheet;
+
+  function useIp(v){
+    v = v.trim();
+    if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(v)){ toast("That doesn't look like an IP address"); return; }
+    if (v !== ip){ ip = v; store.set("ip", ip); store.set("name", null); }
+    if (ws){ const s = ws; ws = null; s.close(); }
+    state = "idle"; tries = 0; banner(null); closeSheet(); connect();
+  }
+  $("save").onclick = () => useIp($("ip").value);
+  $("ip").addEventListener("keydown", e => { if (e.key === "Enter") useIp($("ip").value); });
+  $("forget").onclick = () => {
+    store.set(tokenKey(), null);
+    if (ws){ const s = ws; ws = null; s.close(); }
+    toast("Pairing forgotten. Connect again to re-pair.");
+  };
+
+  // Best-effort network search: works when the page is opened from a file or
+  // plain http:// address (an https:// page isn't allowed to look at http:// devices).
+  if ($("scan")) $("scan").onclick = async () => {
+    const found = $("found"); found.innerHTML = "";
+    if (location.protocol === "https:"){
+      found.innerHTML = `<p>Searching isn't possible from a secure (https) page. Enter the IP address from the TV instead (see below).</p>`;
+      return;
+    }
+    const btn = $("scan"); btn.disabled = true; btn.textContent = "Searching…";
+    const subnets = [];
+    const guess = (ip || "").split(".").slice(0,3).join(".");
+    if (guess.split(".").length === 3) subnets.push(guess);
+    ["192.168.0","192.168.1","192.168.2","10.0.0","10.0.1","192.168.4","192.168.50","192.168.86"].forEach(s => subnets.includes(s) || subnets.push(s));
+    const hits = [];
+    const probe = async host => {
+      const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 1500);
+      try {
+        const r = await fetch(`http://${host}:8001/api/v2/`, {signal: ctl.signal});
+        const j = await r.json();
+        if (j && j.device) hits.push({host, name: j.device.name || j.name, model: j.device.modelName, frame: j.device.FrameTVSupport === "true"});
+      } catch (e) {
+        // CORS may hide the body; fall back to "something answered"
+        if (e.name !== "AbortError"){
+          try { await fetch(`http://${host}:8001/api/v2/`, {mode:"no-cors", signal: ctl.signal}); hits.push({host, name:"Device at " + host}); } catch {}
+        }
+      } finally { clearTimeout(t); }
+    };
+    for (const s of subnets){
+      const hosts = Array.from({length:254}, (_, i) => `${s}.${i+1}`);
+      for (let i = 0; i < hosts.length; i += 48) await Promise.all(hosts.slice(i, i+48).map(probe));
+      if (hits.length) break;
+    }
+    btn.disabled = false; btn.textContent = "Search network";
+    if (!hits.length){ found.innerHTML = `<p>No TV found. Enter the IP address from the TV's network settings.</p>`; return; }
+    hits.forEach(h => {
+      const b = document.createElement("button");
+      b.innerHTML = `<div><b>${h.name || "Samsung TV"}</b><br><span style="color:var(--dim);font-size:13px">${h.host}${h.model ? " · " + h.model : ""}${h.frame ? " · The Frame" : ""}</span></div>`;
+      b.onclick = () => { if (h.name) store.set("name", h.name.replace(/^\[TV\]\s*/, "")); useIp(h.host); };
+      found.appendChild(b);
+    });
+  };
+
+  // Reconnect when the phone wakes up / the page comes back
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && ip && (!ws || ws.readyState > 1) && state !== "denied"){ tries = 0; connect(); }
+  });
+
+  connect();
+})();
+</script>
+</body>
+</html>
