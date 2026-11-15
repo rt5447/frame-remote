@@ -225,6 +225,8 @@ header{display:flex;align-items:center;gap:10px}
     </ol>
   </details>
   <label class="toggle"><span>Vibrate when pressing buttons</span><input type="checkbox" switch id="hapticToggle"></label>
+  <div class="btns"><button id="hapticTest">Test vibration</button></div>
+  <p id="hapticInfo" style="font-size:13px;margin-top:8px"></p>
   <details>
     <summary>TV messages (for troubleshooting)</summary>
     <pre id="log">Nothing yet.</pre>
@@ -233,6 +235,7 @@ header{display:flex;align-items:center;gap:10px}
     <button id="forget">Forget pairing</button>
     <button id="close">Done</button>
   </div>
+  <p style="text-align:center;font-size:12px;margin-top:14px">Frame Remote · version 5</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -295,15 +298,18 @@ header{display:flex;align-items:center;gap:10px}
     if (canVibrate){ try { navigator.vibrate(ms); } catch {} }
     else if (isIOS) iosTick();
   }
-  // Safari only plays the tick inside a user gesture. A finger touching down doesn't count yet,
-  // so on iPhone the tick fires when the finger lifts, unless the page already has an active gesture.
-  const activeGesture = () => !navigator.userActivation || navigator.userActivation.isActive;
+  // Safari only plays the tick while it is handling the finger lifting off the screen (touchend),
+  // so on iPhone a press marks a tick as pending and the touchend handler plays it.
   let hapticPending = false;
   function hapticDown(ms){
-    if (canVibrate || activeGesture()){ buzz(ms); hapticPending = false; }
-    else hapticPending = true;
+    if (canVibrate) buzz(ms);
+    else if (isIOS) hapticPending = true;
   }
-  function hapticUp(){ if (hapticPending){ hapticPending = false; buzz(); } }
+  document.addEventListener("touchend", () => {
+    if (hapticPending){ hapticPending = false; buzz(); }
+  }, {capture: true, passive: true});
+  document.addEventListener("touchcancel", () => { hapticPending = false; }, {capture: true, passive: true});
+  const iosVersion = (() => { const m = navigator.userAgent.match(/OS (\d+)[_.](\d+)/); return isIOS && m ? parseFloat(m[1] + "." + m[2]) : null; })();
 
   // ---------- troubleshooting log ----------
   const logLines = [];
@@ -436,7 +442,7 @@ header{display:flex;align-items:center;gap:10px}
     const k = btn.dataset.key, repeat = btn.hasAttribute("data-repeat");
     let t1, t2;
     const stop = e => { clearTimeout(t1); clearInterval(t2); btn.classList.remove("down");
-      if (e && e.type === "pointerup") hapticUp(); else hapticPending = false; };
+      if (e && e.type === "pointercancel") hapticPending = false; };
     btn.addEventListener("pointerdown", e => {
       e.preventDefault(); btn.classList.add("down"); hapticDown(10); key(k);
       if (repeat) t1 = setTimeout(() => { t2 = setInterval(() => key(k), 140); }, 450);
@@ -459,7 +465,7 @@ header{display:flex;align-items:center;gap:10px}
     });
     const end = fire => () => {
       clearTimeout(t); b.classList.remove("down","holding");
-      if (fire && !held){ hapticUp(); key("KEY_POWER"); } else hapticPending = false;
+      if (fire && !held){ key("KEY_POWER"); }
       held = true;
     };
     b.addEventListener("pointerup", end(true));
@@ -531,6 +537,13 @@ header{display:flex;align-items:center;gap:10px}
   }
   $("save").onclick = () => useIp($("ip").value);
   $("ip").addEventListener("keydown", e => { if (e.key === "Enter") useIp($("ip").value); });
+  $("hapticTest").onclick = () => { const was = hapticsOn; hapticsOn = true; buzz(30); hapticsOn = was; };
+  $("hapticInfo").textContent =
+    canVibrate ? "This phone supports vibration." :
+    isIOS ? (iosVersion && iosVersion < 18
+              ? `iPhone haptics need iOS 18 or newer. This phone reports iOS ${iosVersion}.`
+              : `iPhone${iosVersion ? " (iOS " + iosVersion + ")" : ""}: you'll feel a light tick as your finger lifts. If Test vibration does nothing, turn on Settings → Sounds & Haptics → System Haptics.`)
+          : "This device can't vibrate.";
   $("hapticToggle").checked = hapticsOn;
   $("hapticToggle").onchange = e => {
     hapticsOn = e.target.checked; store.set("haptics", hapticsOn ? null : "off");
