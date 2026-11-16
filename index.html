@@ -235,7 +235,7 @@ header{display:flex;align-items:center;gap:10px}
     <button id="forget">Forget pairing</button>
     <button id="close">Done</button>
   </div>
-  <p style="text-align:center;font-size:12px;margin-top:14px">Frame Remote · version 5</p>
+  <p style="text-align:center;font-size:12px;margin-top:14px">Frame Remote · version 6</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -540,7 +540,9 @@ header{display:flex;align-items:center;gap:10px}
   $("hapticTest").onclick = () => { const was = hapticsOn; hapticsOn = true; buzz(30); hapticsOn = was; };
   $("hapticInfo").textContent =
     canVibrate ? "This phone supports vibration." :
-    isIOS ? (iosVersion && iosVersion < 18
+    isIOS ? (iosVersion && iosVersion >= 26.5
+              ? `This iPhone reports iOS ${iosVersion}. Apple blocked web pages from using the iPhone's vibration in iOS 26.5, so haptics can't work here (Android phones still vibrate).`
+            : iosVersion && iosVersion < 18
               ? `iPhone haptics need iOS 18 or newer. This phone reports iOS ${iosVersion}.`
               : `iPhone${iosVersion ? " (iOS " + iosVersion + ")" : ""}: you'll feel a light tick as your finger lifts. If Test vibration does nothing, turn on Settings → Sounds & Haptics → System Haptics.`)
           : "This device can't vibrate.";
