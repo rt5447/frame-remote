@@ -224,6 +224,7 @@ header{display:flex;align-items:center;gap:10px}
       <li>Add this page to your home screen so it opens like an app.</li>
     </ol>
   </details>
+  <label class="toggle"><span>Click sound when pressing buttons</span><input type="checkbox" switch id="soundToggle"></label>
   <label class="toggle"><span>Vibrate when pressing buttons</span><input type="checkbox" switch id="hapticToggle"></label>
   <div class="btns"><button id="hapticTest">Test vibration</button></div>
   <p id="hapticInfo" style="font-size:13px;margin-top:8px"></p>
@@ -235,7 +236,7 @@ header{display:flex;align-items:center;gap:10px}
     <button id="forget">Forget pairing</button>
     <button id="close">Done</button>
   </div>
-  <p style="text-align:center;font-size:12px;margin-top:14px">Frame Remote · version 6</p>
+  <p style="text-align:center;font-size:12px;margin-top:14px">Frame Remote · version 7</p>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -293,6 +294,36 @@ header{display:flex;align-items:center;gap:10px}
       document.head.appendChild(label); label.click(); label.remove();
     } catch {}
   }
+  // ---------- click sound ----------
+  // A short synthesized "tick" (no audio files). Browsers only allow sound after a tap, so the
+  // audio is unlocked on the first touch. On iPhone it follows the ring/silent switch.
+  let soundOn = store.get("sound") !== "off";
+  let actx = null;
+  function audioUnlock(){
+    try {
+      if (!actx){ const C = window.AudioContext || window.webkitAudioContext; if (!C) return; actx = new C(); }
+      if (actx.state === "suspended") actx.resume();
+    } catch {}
+  }
+  ["touchend","pointerup","click"].forEach(ev => document.addEventListener(ev, audioUnlock, {capture:true, passive:true}));
+  function clickSound(){
+    if (!soundOn) return;
+    audioUnlock();
+    if (!actx || actx.state !== "running") return;
+    const t = actx.currentTime;
+    // low "thock"
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = "sine"; o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(70, t + 0.05);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.55, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+    o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.08);
+    // crisp click on top
+    const n = actx.createBuffer(1, Math.floor(actx.sampleRate * 0.012), actx.sampleRate), d = n.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+    const src = actx.createBufferSource(), f = actx.createBiquadFilter(), g2 = actx.createGain();
+    src.buffer = n; f.type = "highpass"; f.frequency.value = 2500; g2.gain.value = 0.35;
+    src.connect(f).connect(g2).connect(actx.destination); src.start(t);
+  }
+
   function buzz(ms = 12){
     if (!hapticsOn) return;
     if (canVibrate){ try { navigator.vibrate(ms); } catch {} }
@@ -444,7 +475,7 @@ header{display:flex;align-items:center;gap:10px}
     const stop = e => { clearTimeout(t1); clearInterval(t2); btn.classList.remove("down");
       if (e && e.type === "pointercancel") hapticPending = false; };
     btn.addEventListener("pointerdown", e => {
-      e.preventDefault(); btn.classList.add("down"); hapticDown(10); key(k);
+      e.preventDefault(); btn.classList.add("down"); hapticDown(10); clickSound(); key(k);
       if (repeat) t1 = setTimeout(() => { t2 = setInterval(() => key(k), 140); }, 450);
     });
     ["pointerup","pointercancel","pointerleave"].forEach(ev => btn.addEventListener(ev, stop));
@@ -456,7 +487,7 @@ header{display:flex;align-items:center;gap:10px}
   (() => {
     const b = $("power"); let t, held = false;
     b.addEventListener("pointerdown", e => {
-      e.preventDefault(); held = false; b.classList.add("down","holding"); hapticDown(10);
+      e.preventDefault(); held = false; b.classList.add("down","holding"); hapticDown(10); clickSound();
       t = setTimeout(() => {
         held = true; buzz([20,40,20]); b.classList.remove("holding");
         key("KEY_POWER","Press"); toast("Turning the TV fully off…");
@@ -487,7 +518,7 @@ header{display:flex;align-items:center;gap:10px}
   const FAV = [/netflix/i, /youtube$/i, /^youtube/i, /prime video|amazon/i, /hotstar|disney/i, /apple tv/i, /spotify/i, /zee5/i, /sony\s?liv/i, /plex/i];
   function appBtn(a){
     const b = document.createElement("button"); b.textContent = a.name;
-    b.onclick = () => { buzz(12); launch(a); toast("Opening " + a.name); };
+    b.onclick = () => { buzz(12); clickSound(); launch(a); toast("Opening " + a.name); };
     return b;
   }
   function renderApps(list){
@@ -546,6 +577,8 @@ header{display:flex;align-items:center;gap:10px}
               ? `iPhone haptics need iOS 18 or newer. This phone reports iOS ${iosVersion}.`
               : `iPhone${iosVersion ? " (iOS " + iosVersion + ")" : ""}: you'll feel a light tick as your finger lifts. If Test vibration does nothing, turn on Settings → Sounds & Haptics → System Haptics.`)
           : "This device can't vibrate.";
+  $("soundToggle").checked = soundOn;
+  $("soundToggle").onchange = e => { soundOn = e.target.checked; store.set("sound", soundOn ? null : "off"); if (soundOn) clickSound(); };
   $("hapticToggle").checked = hapticsOn;
   $("hapticToggle").onchange = e => {
     hapticsOn = e.target.checked; store.set("haptics", hapticsOn ? null : "off");
